@@ -71,15 +71,30 @@ def find_threshold_crossings_2d(neural_data, fs, th=3.5, ap_time=1, verbose=Fals
     return spike_raster
 
 
-# Return binned data according to bin size (1D or 2D)
-# Input: 1d or 2D list
-def bin_matrix(dat, bin_size):
-    if len(np.array(dat).shape) > 1:
-        bin_mat = []
-        for i in range(np.array(dat).shape[0]):
-            bin_mat.append(
-                np.sum(np.array(dat[i][:(len(dat[i]) // bin_samples) * bin_samples]).reshape(-1, bin_samples),
-                       axis=1).tolist())
-        return bin_mat
-    else:
-        return np.sum(np.array(dat[:(len(dat) // bin_samples) * bin_samples]).reshape(-1, bin_samples), axis=1).tolist()
+# Return binned vector according to bin size (Input: 1D list)
+def downsample_list_1d(dat, number_bin_samples):
+    """"
+     Downsamples (bins) a 1D-list acording to selected number of bin samples.
+
+     Input: [1 x Samples]
+     number_bin_samples = Number of samples in each bin (bin size in samples).
+
+     Output: [1 x Samples]
+    """
+    return np.sum(np.array(dat[:(len(dat) // number_bin_samples) * number_bin_samples]).reshape(-1, number_bin_samples), axis=1).tolist()
+    
+# Return binned matrix along dimension 2 according to bin size (Input: 2D list)
+def downsample_list_2d(dat, number_bin_samples):
+    """"
+     Downsamples (bins) a 2D-list acording to selected number of bin samples.
+
+     Input: [n x Samples]
+     number_bin_samples = Number of samples in each bin (bin size in samples).
+
+     Output: [n x Samples]
+    """
+    downsampled_dat = []
+    for i in range(np.array(dat).shape[0]):
+        downsampled_dat.append(downsample_list_1d(dat[i], number_bin_samples)
+                       
+    return downsampled_dat
