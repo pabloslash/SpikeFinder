@@ -95,6 +95,6 @@ def downsample_list_2d(dat, number_bin_samples):
     """
     downsampled_dat = []
     for i in range(np.array(dat).shape[0]):
-        downsampled_dat.append(downsample_list_1d(dat[i], number_bin_samples)
-                       
+        downsampled_dat.append(downsample_list_1d(dat[i], number_bin_samples))
+
     return downsampled_dat
