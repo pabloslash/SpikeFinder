@@ -46,41 +46,67 @@ def noncausal_filter_1d(signal, b, a=1):
     return y
 
 
-def discard_channels_3d(neural_data, bird):
+def noncausal_filter_2d(data, b, a=1):
+    """"
+     Filter all channels in a 2D array [ Channels x Samples ]
+     Noncausal filtering (filtfilt)
+
+     Input: [ Channels x Samples ]
+     b, a = Filter Coefficients
+
+     Output: [ Filtered Channels x Samples ]
+    """
+    for ch in range(len(data)):
+        data[ch] = noncausal_filter_1d(data[ch], b, a=a)
+    return data
+
+def noncausal_filter_3d(data, b, a=1):
+    """"
+     Filter all channels in a 3D array [ Epochs x Channels x Samples ]
+     Noncausal filtering (filtfilt)
+
+     Input: [ Epochs x Channels x Samples ]
+     b, a = Filter Coefficients
+
+     Output: [ Epochs x Filtered Channels x Samples ]
+    """
+    for ep in range(len(data)):
+        data[ep] = noncausal_filter_2d(data[ep], b, a=a)
+    return data
+
+
+'''
+DISCARD NOISY / SILENT CHANNELS
+'''
+
+
+def discard_channels_3d(neural_data, bad_channels):
     """"
      Function for 'epoched data'.
      Deletes bad channels from a 3D array [epochs x channels x samples].
 
      Input: [Epochs x Channels x Samples]
-     bird = 'z007', 'z017' or 'z020' have pre-selected bad channels
+     bad_channels = bad channels to discard
 
      Output: [ Epochs x (Channels - Bad_Channels) x Samples]
     """
     
-    assert bird in ['z007', 'z017', 'z020'], "Bird must be 'z007', 'z017' or 'z020'"
     clean_neural_data = []
     for ep in range(len(neural_data)):
-        clean_neural_data.append(discard_channels_2d(neural_data[ep], bird))
+        clean_neural_data.append(discard_channels_2d(neural_data[ep], bad_channels))
         
     return clean_neural_data
 
-def discard_channels_2d(neural_data, bird):
+def discard_channels_2d(neural_data, bad_channels, verbose=True):
     """"
      Deletes bad channels from a 2D array [channels x samples].
 
      Input: [Channels x Samples]
-     bird = 'z007', 'z017' or 'z020' have pre-selected bad channels
+     bad_channels = bad channels to discard
 
      Output: [ (Channels - Bad_Channels) x Samples]
     """
     
-    assert bird in ['z007', 'z017', 'z020'], "Bird must be 'z007', 'z017' or 'z020'"
+    if verbose: print('Deleting channels {}'.format(bad_channels))
+    return np.delete(neural_data, bad_channels, 0)
 
-    bad_channels = {'z007': [0,24], 
-                    'z017': [], 
-                    'z020': [1]}
-    
-    print('Deleting channels {}'.format(bad_channels[bird]))
-    
-    return np.delete(neural_data, bad_channels[bird], 0)
-    
