@@ -105,6 +105,7 @@ def downsample_list_2d(dat, number_bin_samples):
 
     return np.array(downsampled_dat)
 
+
 # Return binned matrix along dimension 3 according to bin size (Input: 3D list)
 def downsample_list_3d(dat, number_bin_samples):
     """"
