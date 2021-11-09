@@ -1,10 +1,5 @@
 clear; clc; close all
-% Hw 1. Threshold Crossings
-load('song_neural_ex.mat')
 
-%% Filter Signal
-
-% waveform = - waveform;
 
 fs = 25000;
 lowcut = 300;
@@ -24,6 +19,9 @@ save('filters/butter_bp_300Hz-8000hz_order4_sr25000.mat','a','b');
 
     
 %% Filter singal
+
+%load('song_neural_ex.mat')
+% waveform = - waveform;
 
 filtIIR = filter(b2, a2, waveform);
 filtFIR = filter(b3, 1, waveform);
