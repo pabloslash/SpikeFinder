@@ -1,7 +1,6 @@
 
 # Imports
 import numpy as np
-import filtering_helper
 import copy
 from scipy import stats
 
