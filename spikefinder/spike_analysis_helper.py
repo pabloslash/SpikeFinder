@@ -1,8 +1,8 @@
 
 # Imports
 import numpy as np
-import filtering_helper
 import copy
+from scipy import stats
 
 '''
 THRESHOLD CROSSINGS
@@ -77,48 +77,60 @@ def find_threshold_crossings_2d(neural_data, fs, th=3.5, ap_time=1, verbose=Fals
 
 
 # Return binned vector according to bin size (Input: 1D list)
-def downsample_list_1d(dat, number_bin_samples):
+def downsample_list_1d(dat, number_bin_samples, mode='sum'):
     """"
      Downsamples (bins) a 1D-list acording to selected number of bin samples.
 
      Input: dat[1 x Samples]
      number_bin_samples = Number of samples in each bin (bin size in samples).
+     mode: 'sum', 'mean', 'mode' (downsample summing, averaging or taking the mode of all samples)
 
      Output: [1 x Samples]
     """
-    return np.sum(np.array(dat[:(len(dat) // number_bin_samples) * number_bin_samples]).reshape(-1, number_bin_samples), axis=1)
+    assert mode in ['sum', 'mean', 'mode'], "Mode type must be 'sum', 'mean', or 'mode', default is 'sum'"
+    
+    if mode == 'sum':
+        return np.sum(np.array(dat[:(len(dat) // number_bin_samples) * number_bin_samples]).reshape(-1, number_bin_samples), axis=1)
+    
+    elif mode == 'mean':
+        return np.mean(np.array(dat[:(len(dat) // number_bin_samples) * number_bin_samples]).reshape(-1, number_bin_samples), axis=1)
+    
+    elif mode == 'mode':
+        return stats.mode(np.array(dat[:(len(dat) // number_bin_samples) * number_bin_samples]).reshape(-1, number_bin_samples), axis=1)[0].reshape(-1)
 
     
 # Return binned matrix along dimension 2 according to bin size (Input: 2D list)
-def downsample_list_2d(dat, number_bin_samples):
+def downsample_list_2d(dat, number_bin_samples, mode='sum'):
     """"
      Downsamples (bins) a 2D-list acording to selected number of bin samples.
 
      Input: dat[n x Samples]
      number_bin_samples = Number of samples in each bin (bin size in samples).
+     mode: 'sum', 'mean', 'mode' (downsample summing, averaging or taking the mode of all samples)
 
      Output: [n x Samples]
     """
     downsampled_dat = []
     for i in range(np.array(dat).shape[0]):
-        downsampled_dat.append(downsample_list_1d(dat[i], number_bin_samples))
+        downsampled_dat.append(downsample_list_1d(dat[i], number_bin_samples, mode=mode))
 
     return np.array(downsampled_dat)
 
 
 # Return binned matrix along dimension 3 according to bin size (Input: 3D list)
-def downsample_list_3d(dat, number_bin_samples):
+def downsample_list_3d(dat, number_bin_samples, mode='sum'):
     """"
      Downsamples (bins) a 3D-list acording to selected number of bin samples.
 
      Input: dat[trials x n x Samples]
      number_bin_samples = Number of samples in each bin (bin size in samples).
+     mode: 'sum', 'mean', 'mode' (downsample summing, averaging or taking the mode of all samples)
 
      Output: [trials x n x Samples]
     """
     downsampled_dat = []
     for trial in range(np.array(dat).shape[0]):
-        downsampled_dat.append(downsample_list_2d(dat[trial], number_bin_samples)) 
+        downsampled_dat.append(downsample_list_2d(dat[trial], number_bin_samples, mode=mode)) 
         
     return np.array(downsampled_dat)
 
