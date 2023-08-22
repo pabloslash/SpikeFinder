@@ -204,7 +204,7 @@ def clean_spikeRaster_noisyEvents_3d(spike_raster, coocurrence_threshold=10, ver
     # Clean time events in which the coocurrence of spikes is 'coocurrence_threshold' times the standard deviation of the distribution
     cl_spike_raster = []
     for ep in range(len(spike_raster)):
-        cl_spike_raster.append(clean_spikeRaster_noisyEvents2d(spike_raster[ep], spike_distribution=[spike_mean, spike_sdt], coocurrence_threshold=coocurrence_threshold))
+        cl_spike_raster.append(clean_spikeRaster_noisyEvents2d(spike_raster[ep], spike_distribution=[spike_mean, spike_sdt], coocurrence_threshold=coocurrence_threshold, verbose=verbose))
         
     return cl_spike_raster
 

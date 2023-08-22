@@ -33,11 +33,11 @@ def butter_filt_coefficients(fs, lowcut=[], highcut=[], btype='band', order=5):
 
 
 # Load Butterworth filter coefficients from a file
-def load_filter_coefficients_matlab(filter_file_path):
-    coefficients = loadmat(filter_file_path)
+def load_filter_coefficients(file_path):
+    coefficients = loadmat(file_path)
     a = coefficients['a'][0]
     b = coefficients['b'][0]
-    return b, a  # The output is a double list after loading .mat file
+    return b, a    # The output is a double list after loading .mat file
 
 
 # Filter non-causally (forward & backwards) given filter coefficients
